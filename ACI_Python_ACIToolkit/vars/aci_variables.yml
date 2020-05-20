@@ -1,0 +1,39 @@
+---
+tenant: "EC_Demo_Python_Toolkit"
+vrf: "VRF_EC_Demo_Python_Toolkit"
+bridge_domains:
+  - bd: "BD_EC_Demo_Python_Toolkit"
+    gateway: "10.16.110.1"
+    mask: "24"
+    scope: "shared"
+    l3_out: "labinfra-l3out-ro"
+ap: "AP_EC_Demo_Python_Toolkit"
+epgs:
+  - epg: "EPG_EC_Demo_Python_Toolkit"
+    bd: "BD_EC_Demo_Python_Toolkit"
+epg_contracts:
+  - epg: "EPG_EC_Demo_Python_Toolkit"
+    contract: "CONTRACT_EC_Demo_Python_Toolkit"
+    contract_type: "consumer"
+contracts:
+  - contract: "CONTRACT_EC_Demo_Python_Toolkit"
+    subject: "SUBJECT_EC_Demo_Python_Toolkit"
+    filter: "allow_http"
+  - contract: "CONTRACT_EC_Demo_Python_Toolkit"
+    subject: "SUBJECT_EC_Demo_Python_Toolkit"
+    filter: "allow_ssh"
+filters:
+  - filter: "allow_http"
+    entry: "http"
+    protocol: "tcp"
+    port: "80"
+  - filter: "allow_ssh"
+    entry: "ssh"
+    protocol: "tcp"
+    port: "22"
+  - filter: "allow_icmp"
+    entry: "icmp"
+    protocol: "icmp"
+    port: "unspecified"
+
+

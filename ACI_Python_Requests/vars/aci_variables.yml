@@ -1,0 +1,16 @@
+---
+url: "https://sandboxapicdc.cisco.com/"
+username: "admin"
+password: "ciscopsdt"
+tenant: "EC_Demo_Python_Requests"
+vrf: "VRF_EC_Demo_Python_Requests"
+bridge_domains:
+  - bd: "BD_EC_Demo_Python_Requests"
+    gateway: "10.16.110.1"
+    mask: "24"
+    scope: "shared"
+ap: "AP_EC_Demo_Python_Requests"
+epgs:
+  - epg: "EPG_EC_Demo_Python_Requests"
+    bd: "BD_EC_Demo_Python_Requests"
+

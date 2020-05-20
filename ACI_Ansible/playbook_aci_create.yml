@@ -1,0 +1,81 @@
+- name: Limited ACI configuration
+  hosts: apic
+  connection: local
+  gather_facts: False
+  vars_files:
+    - vars/variables_aci.yml
+  
+  tasks:
+    - name: Task 01 - Ensure Tenant Exists
+      aci_tenant:
+        host: "{{ inventory_hostname }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: "present"
+        validate_certs: False
+        tenant: "{{ tenant }}"
+        descr: "Tenant Created Using Ansible"
+      tags: tenant, vrf, bd, filter, contract, app, epg
+
+    - name: Task 02 - Ensure VRF Exists
+      aci_vrf:
+        host: "{{ inventory_hostname }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: "present"
+        validate_certs: False
+        tenant: "{{ tenant }}"
+        vrf: "{{ vrf }}"
+        descr: "VRF Created Using Ansible"
+      tags: vrf, bd
+
+    - name: Task 03 - Ensure Bridge Domains and Exist
+      aci_bd:
+        host: "{{ inventory_hostname }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: "present"
+        validate_certs: False
+        tenant: "{{ tenant }}"
+        bd: "{{ item.bd | default('prod_bd') }}"
+        vrf: "{{ vrf }}"
+      with_items: "{{ bridge_domains }}"
+      tags: bd
+    
+    - name: Task 04 - Ensure Bridge Domains Have Subnets
+      aci_bd_subnet:
+        host: "{{ inventory_hostname }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        validate_certs: False
+        state: "present"
+        tenant: "{{ tenant }}"
+        bd: "{{ item.bd }}"
+        gateway: "{{ item.gateway }}"
+        mask: "{{ item.mask }}"
+        scope: ["public", "shared"]
+      with_items: "{{ bridge_domains }}"
+
+    - name: Task 05 - Add a new Application Profile
+      aci_ap:
+        host: "{{ inventory_hostname }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        validate_certs: False
+        tenant: '{{ tenant }}' 
+        ap: '{{ ap }}'
+        state: present
+
+    - name: Task 06 - Create EPG's and add to the Application Profile
+      aci_epg:
+        host: "{{ inventory_hostname }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        validate_certs: False
+        tenant: '{{ tenant }}' 
+        ap: '{{ ap }}'
+        epg: '{{ item.epg }}'
+        bd: '{{ item.bd }}'  
+        preferred_group: yes
+        state: present
+      with_items: "{{ epgs }}"
