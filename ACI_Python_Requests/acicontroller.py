@@ -10,6 +10,7 @@ yml_file = open("./vars/aci_variables.yml").read()
 yml_dict = yaml.load(yml_file, yaml.SafeLoader)
 
 url = yml_dict['url']
+
 username = yml_dict['username']
 password = yml_dict['password']
 

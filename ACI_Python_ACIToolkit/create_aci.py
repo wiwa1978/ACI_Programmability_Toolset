@@ -3,13 +3,15 @@ import yaml
 from pprint import pprint
 
 def main():
-   url = "https://sandboxapicdc.cisco.com"
-
+   url = "https://10.48.108.214"
    user = "admin"
-   pwd = "ciscopsdt"
+   pwd = "Frisco123"
 
    session = Session(url, user, pwd)
-   session.login()
+   resp = session.login()
+   if not resp.ok:
+      print('%% Could not login to APIC')
+
 
    # Read YAML configuration
    # The various variables contain the values as they are read from the variables file
@@ -22,7 +24,8 @@ def main():
    bd_subnet = yml_dict['bridge_domains'][0]['gateway'] + "/" + yml_dict['bridge_domains'][0]['mask']
 
    ap_name = yml_dict['ap']
-   epg_name = yml_dict['epgs'][0]['epg']
+   epg1_name = yml_dict['epgs'][0]['epg']
+   epg2_name = yml_dict['epgs'][1]['epg']
 
    # Configure ACI
 
@@ -37,9 +40,11 @@ def main():
    bd.add_subnet(subnet)               # Add the subnet to the BD
    
    ap = AppProfile(ap_name, tenant )   # Create AP with variable name for AP
-   epg = EPG(epg_name, ap)             # Create EPG with variable name for EPG and assign to AP
+   epg1 = EPG(epg1_name, ap)            # Create EPG with variable name for EPG and assign to AP
+   epg2 = EPG(epg2_name, ap) 
    
-   epg.attach(bd)
+   epg1.attach(bd)
+   epg2.attach(bd)
    # Read all the tenants on the ACI fabric. Reason is that we need to assign a number of objects from 
    # the common tenant to the tenant we are creating.
    
@@ -51,7 +56,8 @@ def main():
 
       contract = Contract(contracts_name, tenant)        # Create Contract object on ACI
       addFilters(contract, yml_dict['filters'])          # Function loops over the filters in the variable file and will assign them to the contract
-      epg.consume(contract)                              # Attach these contracts to the EPG
+      epg1.provide(contract)                             # Attach these contracts to the EPG
+      epg2.consume(contract) 
 
    response = session.push_to_apic(tenant.get_url(), data=tenant.get_json()) #Send all the gathered information to APIC
 

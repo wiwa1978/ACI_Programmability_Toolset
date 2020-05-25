@@ -10,7 +10,8 @@ JSON_TEMPLATES = Environment(loader=FileSystemLoader('templates'), trim_blocks=T
 def create_tenant(tenant_name):
    tenant_endpoint = "api/mo/uni.json"
    template = JSON_TEMPLATES.get_template("add_tenant.j2.json")
-   payload = template.render(name=tenant_name)
+   description = f"Tenant {tenant_name} created with Python Requests"
+   payload = template.render(name=tenant_name, description=description)
    
    response = execute_rest_call(endpoint=tenant_endpoint, method="POST", data=payload)
    return response

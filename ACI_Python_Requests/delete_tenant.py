@@ -13,7 +13,6 @@ yml_dict = yaml.load(yml_file, yaml.SafeLoader)
 tenant = yml_dict['tenant']
 
 def delete_tenant():
-    print(tenant)
     tenant_endpoint = "api/mo/uni.json"
     template = JSON_TEMPLATES.get_template("delete_tenant.j2.json")
     payload = template.render(name=tenant)
